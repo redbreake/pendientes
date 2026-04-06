@@ -7,7 +7,7 @@ import secrets
 # Configurar Flask para que sirva los archivos de esta misma carpeta
 app = Flask(__name__, static_folder='.', static_url_path='')
 
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "kaladmin")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", )
 # PythonAnywhere reinicia la app de vez en cuando, para que las sesiones de los mods 
 # no se caigan a cada rato al reiniciarse, podríamos usar algo fijo o simplemente 
 # aceptar que tengan que loguearse de nuevo. Aquí generamos un token al iniciar app.
