@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animes Kala - Tracker</title>
+    <meta name="description" content="Seguimiento de animes que Kala está viendo y los capítulos comprados por el chat.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+
+    <!-- Animated Background Orbs -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <div class="app-wrapper">
+
+        <!-- Login / Admin Top Right Button -->
+        <div id="btn-login-top" style="position: absolute; top: 1.5rem; right: 1.5rem; z-index: 100;">
+            <a href="login.html" class="btn-floating" style="background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.4); color: var(--text-main); font-size: 1.15rem; padding: 0.8rem 1.8rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-decoration: none; backdrop-filter: blur(10px); transition: all 0.3s; pointer-events: auto;">🔑 Login Admin</a>
+        </div>
+
+        <!-- Hero Header -->
+        <header class="main-header">
+            <div class="header-badge">
+                <span class="dot"></span>
+                En progreso ahora mismo
+            </div>
+            <h1 class="title">Animes <span class="highlight">Kala</span></h1>
+            <p class="subtitle">Seguimiento de visualizaciones y capítulos comprados por el chat</p>
+        </header>
+
+        <!-- Stats Bar -->
+        <div id="stats-bar" class="stats-bar hidden">
+            <div class="stat-item">
+                <span id="stat-total" class="stat-number purple">-</span>
+                <span class="stat-label">Total Animes</span>
+            </div>
+            <div class="stat-item">
+                <span id="stat-entera" class="stat-number green">-</span>
+                <span class="stat-label">Temporada Entera</span>
+            </div>
+            <div class="stat-item">
+                <span id="stat-eps" class="stat-number blue">-</span>
+                <span class="stat-label">Caps Comprados</span>
+            </div>
+            <div class="stat-item">
+                <span id="stat-pending" class="stat-number orange">-</span>
+                <span class="stat-label">Sin Comprar</span>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div id="controls-bar" class="controls-bar hidden">
+            <input
+                type="text"
+                id="search-input"
+                class="search-input"
+                placeholder="🔍  Buscar anime..."
+                aria-label="Buscar anime"
+            >
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="entera">✓ Entera</button>
+            <button class="filter-btn" data-filter="purchased">Comprados</button>
+        </div>
+
+        <main>
+            <!-- Loading -->
+            <div id="loading" class="loading-state">
+                <div class="spinner"></div>
+                <p>Cargando anime list...</p>
+            </div>
+
+            <!-- Grid -->
+            <div id="anime-grid" class="anime-grid hidden"></div>
+
+            <!-- Error -->
+            <div id="error-message" class="error-message hidden">
+                <p>⚠️ Hubo un problema cargando los datos. Por favor recargá la página.</p>
+            </div>
+        </main>
+
+        <!-- Floating Admin Controls (Hidden by default) -->
+        <div id="admin-controls" class="admin-controls hidden">
+            <button id="btn-add-anime" class="btn-floating" title="Añadir Anime">➕ Añadir Anime</button>
+            <button id="btn-logout" class="btn-floating btn-floating-danger" title="Cerrar Sesión">🚪 Salir</button>
+        </div>
+
+        <!-- Edit Anime Modal -->
+        <div id="edit-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2 id="edit-modal-title" class="modal-title">Editar Anime</h2>
+                <div class="modal-body">
+                    <div class="form-group-modal">
+                        <label>Nombre</label>
+                        <input type="text" id="edit-name" class="modal-input">
+                    </div>
+                    <div class="form-group-modal">
+                        <label>Subir nuevo Poster (Solo si querés cambiarlo)</label>
+                        <input type="file" id="edit-img-file" accept="image/*" class="modal-input" style="padding:0.5rem;">
+                    </div>
+                    <div class="form-group-modal">
+                        <label>Capítulo Actual Visto</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn-step" onclick="stepInput('edit-ep', -1)">-</button>
+                            <input type="text" id="edit-ep" class="modal-input text-center">
+                            <button class="btn-step" onclick="stepInput('edit-ep', 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="form-group-modal">
+                        <label>Capítulos Comprados</label>
+                        <div style="display: flex; gap: 0.5rem; align-items:center;">
+                            <button class="btn-step" onclick="stepInput('edit-buy', -1)">-</button>
+                            <input type="text" id="edit-buy" class="modal-input text-center">
+                            <button class="btn-step" onclick="stepInput('edit-buy', 1)">+</button>
+                            <button class="btn-entera" onclick="document.getElementById('edit-buy').value='ENTERA'">ENTERA</button>
+                        </div>
+                    </div>
+                    <div class="modal-actions" style="margin-top: 1rem; display: flex; justify-content: space-between;">
+                        <button id="btn-delete" class="btn-modal btn-modal-danger">🗑️ Eliminar</button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button id="btn-cancel-edit" class="btn-modal btn-modal-secondary">Cancelar</button>
+                            <button id="btn-save-edit" class="btn-modal btn-modal-primary">Guardar Cambios</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Anime Modal -->
+        <div id="add-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2 class="modal-title">Añadir Nuevo Anime</h2>
+                <div class="modal-body">
+                    <div class="form-group-modal">
+                        <label>Nombre de Anime</label>
+                        <input type="text" id="add-name" class="modal-input" placeholder="Ej: Shingeki no Kyojin">
+                    </div>
+                    <div class="form-group-modal">
+                        <label>Poster / Imagen Local</label>
+                        <input type="file" id="add-img-file" accept="image/*" class="modal-input" style="padding:0.5rem;">
+                    </div>
+                    <div class="modal-actions" style="margin-top: 1rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+                        <button id="btn-cancel-add" class="btn-modal btn-modal-secondary">Cancelar</button>
+                        <button id="btn-save-add" class="btn-modal btn-modal-primary">Añadir Anime</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <footer class="site-footer">
+            Hecho con <span>♥</span> para el chat de Kala &nbsp;·&nbsp; Actualiza automáticamente
+        </footer>
+
+    </div>
+
+    <script src="app.js?v=4"></script>
+</body>
+</html>

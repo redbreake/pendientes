@@ -1,0 +1,92 @@
+[
+  {
+    "name": "NARUTO Z",
+    "current_episode": "17",
+    "purchased": "ENTERA",
+    "image": "imagenes/c66a6dde-8595-40d6-8093-2a2a2893a1af.png"
+  },
+  {
+    "name": "SECONDMONOGATARI",
+    "current_episode": "11",
+    "purchased": "0",
+    "image": "imagenes/SECONDMONOGATARI.png"
+  },
+  {
+    "name": "Scissors Seven",
+    "current_episode": "1",
+    "purchased": "6",
+    "image": "imagenes/Scissors Seven.png"
+  },
+  {
+    "name": "DRAGON BALL",
+    "current_episode": 14,
+    "purchased": "0",
+    "image": "imagenes/DRAGON BALL.png"
+  },
+  {
+    "name": "WHITE ALBUM 2",
+    "current_episode": 1,
+    "purchased": "6",
+    "image": "imagenes/WHITE ALBUM 2.png"
+  },
+  {
+    "name": "86",
+    "current_episode": 17,
+    "purchased": "0",
+    "image": "imagenes/86.png"
+  },
+  {
+    "name": "WORLD TRIGGER",
+    "current_episode": 47,
+    "purchased": "0",
+    "image": "imagenes/WORLD TRIGGER.png"
+  },
+  {
+    "name": "Kuroshitsuji",
+    "current_episode": 6,
+    "purchased": "1",
+    "image": "imagenes/Kuroshitsuji.png"
+  },
+  {
+    "name": "ARABARU",
+    "current_episode": 1,
+    "purchased": "ENTERA",
+    "image": "imagenes/ARABARU.png"
+  },
+  {
+    "name": "MONTANIÑAS S2",
+    "current_episode": 9,
+    "purchased": "ENTERA",
+    "image": "imagenes/MONTANIÑAS S2.png"
+  },
+  {
+    "name": "ALDNOAH ZERO",
+    "current_episode": 21,
+    "purchased": "1",
+    "image": "imagenes/ALDNOAH ZERO.png"
+  },
+  {
+    "name": "SHIGATSU WA KIMI NO USO",
+    "current_episode": 10,
+    "purchased": "0",
+    "image": "imagenes/SHIGATSU WA KIMI NO USO.png"
+  },
+  {
+    "name": "MITSUDOMOE",
+    "current_episode": 6,
+    "purchased": "0",
+    "image": "imagenes/MITSUDOMOE.PNG"
+  },
+  {
+    "name": "SHOUJO SHUMATSU RYOKO",
+    "current_episode": 6,
+    "purchased": "0",
+    "image": "imagenes/SHOUJO SHUMATSU RYOKO.png"
+  },
+  {
+    "name": "SONNY BOY",
+    "current_episode": 10,
+    "purchased": "0",
+    "image": "imagenes/SONNY BOY.png"
+  }
+]

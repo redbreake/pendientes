@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Animes Kala</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=6">
+    <style>
+        .admin-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .admin-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .btn-action {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--t-fast);
+        }
+
+        .btn-action:hover {
+            background: var(--surface-hover);
+            border-color: rgba(167,139,250,0.5);
+        }
+
+        .btn-primary {
+            background: var(--grad-hero);
+            color: #fff;
+            border: none;
+            box-shadow: 0 4px 15px rgba(167,139,250,0.25);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #b9a2fc 0%, #f689c2 50%, #fca459 100%);
+            box-shadow: 0 6px 20px rgba(167,139,250,0.35);
+        }
+        
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        /* Card / Panel */
+        .admin-panel {
+            background: var(--surface-1);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            animation: fadeUp 0.6s ease 0.1s both;
+            margin-bottom: 2rem;
+        }
+
+        /* Table */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-table th {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .table-img {
+            width: 40px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: var(--bg-secondary);
+        }
+
+        /* Forms in Table */
+        .edit-input {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+        }
+        .edit-input:focus {
+            border-color: var(--purple);
+            outline: none;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Form Add Anime */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--green);
+            color: #fff;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: var(--shadow-glow-green);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all var(--t-bounce);
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: #ef4444;
+            box-shadow: 0 0 15px rgba(239,68,68,0.4);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <div class="admin-wrapper" id="app" style="display: none;">
+        <header class="admin-header">
+            <div>
+                <h1 class="admin-title">Panel de Control</h1>
+                <p style="color: var(--text-secondary);">Administra la lista de animes de Kala</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <a href="index.html" class="btn-action" style="text-decoration:none;">Ver Web</a>
+                <button class="btn-action btn-primary" onclick="guardarCambios()">Guardar Todos los Cambios</button>
+                <button class="btn-action" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <!-- Añadir Anime -->
+        <div class="admin-panel">
+            <h2 style="margin-bottom: 1.5rem; font-family: 'Space Grotesk';">➕ Añadir Nuevo Anime</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Nombre del Anime</label>
+                    <input type="text" id="new-name" class="edit-input" placeholder="Ej: Shingeki no Kyojin">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre/Ruta de Imagen (Opcional)</label>
+                    <input type="text" id="new-img" class="edit-input" placeholder="Ej: imagenes/shingeki.png">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Capítulo Actual Visto</label>
+                    <input type="text" id="new-ep" class="edit-input" placeholder="Ej: 12">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Capítulos Comprados (Nº o "ENTERA")</label>
+                    <input type="text" id="new-buy" class="edit-input" placeholder="Ej: 5 o ENTERA">
+                </div>
+            </div>
+            <button class="btn-action btn-primary" onclick="agregarAnime()">Añadir a la lista</button>
+        </div>
+
+        <!-- Lista -->
+        <div class="admin-panel">
+            <h2 style="margin-bottom: 1.5rem; font-family: 'Space Grotesk';">📋 Lista Actual</h2>
+            <div style="overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Poster</th>
+                            <th>Nombre</th>
+                            <th>Cap. Actual</th>
+                            <th>Comprados</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Llenado por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Guardado correctamente ✓</div>
+
+    <script>
+        const token = localStorage.getItem('kala_admin_token');
+        let animesData = [];
+
+        // Check Auth immediately
+        if (!token) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('app').style.display = 'block';
+            cargarDatos();
+        }
+
+        async function cargarDatos() {
+            try {
+                // Agregar timestamp para evitar caché
+                const res = await fetch(`data.json?t=${new Date().getTime()}`);
+                if (!res.ok) throw new Error("Error cargando data.json");
+                animesData = await res.json();
+                renderTable();
+            } catch (err) {
+                showToast("Error al cargar los datos", true);
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            animesData.forEach((anime, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <img src="${anime.image || ''}" class="table-img" onerror="this.style.display='none'">
+                    </td>
+                    <td>
+                        <input type="text" class="edit-input" value="${anime.name}" onchange="updateRow(${index}, 'name', this.value)">
+                    </td>
+                    <td>
+                        <input type="text" class="edit-input" style="width: 80px;" value="${anime.current_episode}" onchange="updateRow(${index}, 'current_episode', this.value)">
+                    </td>
+                    <td>
+                        <input type="text" class="edit-input" style="width: 100px;" value="${anime.purchased}" onchange="updateRow(${index}, 'purchased', this.value)">
+                    </td>
+                    <td class="actions-cell">
+                        <button class="btn-action btn-danger" onclick="eliminarAnime(${index})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateRow(index, field, value) {
+            animesData[index][field] = value;
+        }
+
+        function agregarAnime() {
+            const name = document.getElementById('new-name').value.trim();
+            const image = document.getElementById('new-img').value.trim();
+            const current_episode = document.getElementById('new-ep').value.trim() || "0";
+            const purchased = document.getElementById('new-buy').value.trim() || "0";
+
+            if (!name) {
+                showToast("El nombre es obligatorio", true);
+                return;
+            }
+
+            animesData.unshift({
+                name,
+                current_episode,
+                purchased,
+                image
+            });
+
+            // Limpiar form
+            document.getElementById('new-name').value = '';
+            document.getElementById('new-img').value = '';
+            document.getElementById('new-ep').value = '';
+            document.getElementById('new-buy').value = '';
+
+            renderTable();
+            showToast("Anime añadido a la lista. No olvides guardar.");
+        }
+
+        function eliminarAnime(index) {
+            if (confirm(`¿Seguro que querés eliminar "${animesData[index].name}"?`)) {
+                animesData.splice(index, 1);
+                renderTable();
+                showToast("Anime eliminado. No olvides guardar.");
+            }
+        }
+
+        async function guardarCambios() {
+            try {
+                const btn = document.querySelector('button[onclick="guardarCambios()"]');
+                btn.textContent = "Guardando...";
+                btn.disabled = true;
+
+                const res = await fetch('/api/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(animesData)
+                });
+
+                const data = await res.json();
+                
+                if (res.ok && data.success) {
+                    showToast("¡Cambios guardados exitosamente!");
+                } else if (res.status === 401) {
+                    localStorage.removeItem('kala_admin_token');
+                    window.location.href = 'login.html';
+                } else {
+                    showToast(data.error || "Error al guardar", true);
+                }
+            } catch (err) {
+                showToast("Error de conexión con el servidor", true);
+            } finally {
+                const btn = document.querySelector('button[onclick="guardarCambios()"]');
+                btn.textContent = "Guardar Todos los Cambios";
+                btn.disabled = false;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('kala_admin_token');
+            window.location.href = 'index.html';
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = `toast show ${isError ? 'error' : ''}`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

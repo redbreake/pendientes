@@ -1,0 +1,5 @@
+# Ignored files
+INSTRUCCIONES_HOSTING.txt
+*.xlsx
+/node_modules/
+.DS_Store
